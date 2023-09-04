@@ -6,12 +6,12 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:29:23 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/08/31 17:33:44 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:42:53 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-Testing how pipes work
+Testing how pipe and fork work with wait().
 */
 
 #include <stdio.h>
@@ -28,6 +28,7 @@ int	main(void)
 	char	*msg1;
 	char	*msg2;
 	char	*msg3;
+	pid_t	pid;
 
 	msg1 = "hello world #1";
 	msg2 = "hello world #2";
@@ -46,5 +47,18 @@ int	main(void)
 		printf("%s\n", inbuf);
 		i++;
 	}
+	pid = fork();
+	if (pid == 0)
+	{
+		// wait(NULL);
+		printf("Hello from child\n");
+	}
+
+	if (pid > 0)
+	{
+		wait(NULL);
+		printf("Hello from parent\n");
+	}
+	printf("%s\n", "testprint");
 	return (0);
 }
