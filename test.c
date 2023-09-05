@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:29:23 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/04 17:52:06 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/05 19:31:29 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,30 @@ int	main(void)
 		i++;
 	}
 	pid = fork();
+	if (pid == -1)
+		return(-1);
+	char	*argv[] = {"/bin/ls", "-l", NULL};
+	/* 
+	execve() uses an array of strings argv with the filepath of the program
+	any flags and is NULL terminated. First argument is the filepath and
+	then the full array.
+
+	perror is used for producing a message on standard error. 
+	*/
 	if (pid == 0)
 	{
 		// wait(NULL);
 		printf("Hello from child\n");
+		int		val = execve(argv[0], argv, NULL);
+		printf("hello");
+		if (val == -1)
+			perror("Error\n");
 	}
-
 	if (pid > 0)
 	{
 		wait(NULL);
 		printf("Hello from parent\n");
 	}
-	printf("%s\n", "testprint");
+	printf("execve did not run\n");
 	return (0);
 }
