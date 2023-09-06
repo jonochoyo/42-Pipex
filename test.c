@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:29:23 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/05 19:31:29 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/06 19:17:00 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Testing how pipe and fork work with wait().
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #define MSGSIZE 16
 
@@ -33,6 +34,11 @@ int	main(void)
 	msg1 = "hello world #1";
 	msg2 = "hello world #2";
 	msg3 = "hello world #3";
+
+	/* Use dup2 to duplicate the stdout output into fd1 */
+	int fd1 = open("test.txt",O_WRONLY);
+	dup2(fd1 , STDOUT_FILENO);
+
 	if (pipe(fd) < 0)
 		exit(1);
 	/* write pipe */
@@ -45,6 +51,7 @@ int	main(void)
 		/* read pipe */
 		read(fd[0], inbuf, MSGSIZE);
 		printf("%s\n", inbuf);
+		// fflush(stdout);
 		i++;
 	}
 	pid = fork();
@@ -62,10 +69,12 @@ int	main(void)
 	{
 		// wait(NULL);
 		printf("Hello from child\n");
+		// fflush(stdout);
 		int		val = execve(argv[0], argv, NULL);
 		printf("hello");
+		// fflush(stdout);
 		if (val == -1)
-			perror("Error\n");
+			perror("Error");
 	}
 	if (pid > 0)
 	{

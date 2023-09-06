@@ -1,0 +1,10 @@
+total 128
+-rw-r--r--  1 jchoy-me  2023_adelaide   1919 Aug 30 17:17 README.md
+-rwxr-xr-x  1 jchoy-me  2023_adelaide  49984 Sep  6 16:32 a.out
+-rw-r--r--  1 jchoy-me  2023_adelaide   2214 Sep  6 16:32 test.c
+-rw-r--r--  1 jchoy-me  2023_adelaide      1 Sep  6 16:32 test.txt
+hello world #1
+hello world #2
+hello world #3
+Hello from parent
+execve did not run
