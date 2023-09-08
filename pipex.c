@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/07 17:47:42 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/08 17:32:41 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+
+// Not allowed
+#include <string.h>
+
+// Pending to write function that iterates through the environment variables.
+// Once it finds PATH=, gets all the available paths in an array of strings
+// It checks if the first command can be found in one of the paths
+// If can be found, it runs the program with all the flags (separated by space)
+// To get all the flags will need an array that starts with the path, and then has all the flags as separate elements (:)
+// The array of the path and flags is NULL terminated too.  
 
 /*
 Test for pipex working without envp.
@@ -39,9 +49,26 @@ int	main(int argc, char *argv[], char *envp[])
 	outfile = argv[4];
 	cmd1 = argv[2];
 	cmd2 = argv[3];
+
+	// We have to find the correct path for the command input by the user
+	// Testing if user inputs ls, we will assign the path to ls
+	// If no input, default to cat
+	// May need to create an array of strings where the first string
+	// is the path and the rest the flags so that can be the input for execve
+	char *path;
 	
-	char	*cmd11[] = {"/bin/cat", NULL};
-	char	*cmd22[] = {"/usr/bin/grep", "world", NULL};
+	// change to use my own strcmp
+	if (strcmp(cmd1, "ls") == 0)
+		path = "/bin/ls";
+	else
+		path = "/bin/cat";
+	
+	// if cannot access the program or is not an executable we exit.
+	if (access(path, F_OK | X_OK) != 0)
+		exit(1);
+
+	char	*cmd11[] = {path, NULL};
+	char	*cmd22[] = {"/usr/bin/wc", NULL};
 
 	int	pipe_fd[2];
 	if (pipe(pipe_fd) == -1)
