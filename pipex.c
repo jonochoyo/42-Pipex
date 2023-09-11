@@ -6,17 +6,11 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/08 17:32:41 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/11 17:30:03 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <stdio.h>
-
-// Not allowed
-#include <string.h>
+#include "pipex.h"
 
 // Pending to write function that iterates through the environment variables.
 // Once it finds PATH=, gets all the available paths in an array of strings
@@ -44,7 +38,10 @@ int	main(int argc, char *argv[], char *envp[])
 	int		parent_fd;
 
 	if (argc != 5)
-		return(0);
+	{
+		perror("Invalid input:");
+		exit(1);
+	}
 	infile = argv[1];
 	outfile = argv[4];
 	cmd1 = argv[2];
@@ -58,7 +55,7 @@ int	main(int argc, char *argv[], char *envp[])
 	char *path;
 	
 	// change to use my own strcmp
-	if (strcmp(cmd1, "ls") == 0)
+	if (ft_strncmp(cmd1, "ls", 2) == 0)
 		path = "/bin/ls";
 	else
 		path = "/bin/cat";
