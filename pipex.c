@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/12 16:08:52 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/12 16:52:07 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ void	child(char *infile, int *pipe_fd, char *cmd11[])
 	int val_child;
 
 	in_fd = open(infile, O_RDONLY);
+	if (in_fd == -1)
+	{
+		perror("Open infile error:");
+		exit(1);
+	}	
 	// Make stdin to be the infile
 	dup2(in_fd, STDIN_FILENO);
 	close(in_fd);
@@ -49,7 +54,7 @@ void	child(char *infile, int *pipe_fd, char *cmd11[])
 	// Execute command 1
 	val_child = execve(cmd11[0], cmd11, NULL);
 	if (val_child == -1)
-		perror("Error");
+		perror("Executing child error:");
 }
 
 // PARENT
@@ -68,6 +73,11 @@ void	parent(char *outfile, int *pipe_fd, char *cmd22[])
 
 	wait(NULL);
 	out_fd = open(outfile, O_WRONLY | O_CREAT, 0777);
+	if (out_fd == -1)
+	{
+		perror("Open outfile error:");
+		exit(1);
+	}		
 	// Make input to be the pipe read end
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[1]);
@@ -76,7 +86,7 @@ void	parent(char *outfile, int *pipe_fd, char *cmd22[])
 	close(out_fd); 
 	val_parent = execve(cmd22[0], cmd22, NULL);
 	if (val_parent == -1)
-		perror("Error");
+		perror("Executing parent error:");
 }
 
 int	main(int argc, char *argv[], char *envp[])
