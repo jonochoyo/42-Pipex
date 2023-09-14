@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/12 16:52:07 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/14 18:04:08 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	parent(char *outfile, int *pipe_fd, char *cmd22[])
 	int	val_parent;
 
 	wait(NULL);
-	out_fd = open(outfile, O_WRONLY | O_CREAT, 0777);
+	out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (out_fd == -1)
 	{
 		perror("Open outfile error:");
