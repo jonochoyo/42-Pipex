@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/14 18:04:08 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/15 15:29:14 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ Program can read user input for infile and outfile
 // of the pipe
 // -We ensure fds from pipe and child are closed
 // -Execute cmd1 in the child using infile.
-void	child(char *infile, int *pipe_fd, char *cmd11[])
+
+void	child_prcs(char *infile, int *pipe_fd, char *cmd11[])
 {
 	int	in_fd;
 	int val_child;
@@ -66,7 +67,7 @@ void	child(char *infile, int *pipe_fd, char *cmd11[])
 // close parent_fd
 // execute cmd22 for parent so it outputs to the outfile by using
 // the pipe read end as input.
-void	parent(char *outfile, int *pipe_fd, char *cmd22[])
+void	parent_prcs(char *outfile, int *pipe_fd, char *cmd22[])
 {
 	int	out_fd;
 	int	val_parent;
@@ -95,6 +96,7 @@ int	main(int argc, char *argv[], char *envp[])
 	char	*cmd2;
 	pid_t	pid;
 
+	(void)envp;
 	if (argc != 5)
 	{
 		perror("Invalid input:");
@@ -130,12 +132,29 @@ int	main(int argc, char *argv[], char *envp[])
 	if (pid == 0)
 	{
 		//argv[1] is infile
-		child(argv[1], pipe_fd, cmd11);
+		child_prcs(argv[1], pipe_fd, cmd11);
 	}
 	if (pid > 0)
 	{
 		//argv[4] is outfile
-		parent(argv[4], pipe_fd, cmd22);
+		parent_prcs(argv[4], pipe_fd, cmd22);
 	}
 	return (0);
 }
+
+//envp testing
+// int	main(int argc, char *argv[], char *envp[])
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	int file = open("dup.txt", O_WRONLY | O_CREAT, 0777);
+// 	dup2(file, STDOUT_FILENO);
+// 	close(file);
+// 	printf("%s\n", envp[4]);
+// 	while(envp[i] != NULL)
+// 	{
+// 		printf("%s\n", envp[i]);
+// 		i++;
+// 	}
+// }
