@@ -6,26 +6,21 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/15 16:59:55 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:38:20 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-// Pending to write function that iterates through the environment variables.
-// Once it finds PATH=, gets all the available paths in an array of strings
-// It checks if the first command can be found in one of the paths
-// If can be found, it runs the program with all the flags (separated by space)
-// To get all the flags will need an array that starts with the path, and then 
-//has all the flags as separate elements (:)
-// The array of the path and flags is NULL terminated too.  
-
-// Function to get the path of the command in the env variables PATH
-// Iterates through the envp's until find PATH
-// Split PATH variable into all_paths with split showing all available paths
-// Join / with the cmd to then join with a path to check if the cmd exists
-// and can be run with access. If it does, we return the full path. 
-// Otherwise we free the created things and return NULL if command not found. 
+/*
+- Function to get the path of the command in the envp PATH
+- Iterates through the envp's until find PATH=
+- Splits the PATH into an array of strings holding all available paths all_paths
+- Creates a tmp variable to hold '/' + cmd 
+- Iterates through all_paths and creates a full path to check if can be accessed
+- If it can be accessed and executed, frees the tmp and returns the path
+- Otherwise, returns NULL when command not found
+*/
 char	*get_path(char *cmd, char *envp[])
 {
 	int		i;
@@ -53,6 +48,12 @@ char	*get_path(char *cmd, char *envp[])
 	return (NULL);
 }
 
+/*
+- Function to execute the commands
+- Splits the input cmd into an array of strings for the cmd and flags
+- Finds the cmd path with get_path()
+- If it finds a path, executes the cmd, otherwise prints error and exits. 
+*/
 void	execute_cmd(char *cmd, char *envp[])
 {
 	char	*path;
@@ -76,16 +77,13 @@ void	execute_cmd(char *cmd, char *envp[])
 	free(path);
 }
 
-// Function to execute the command
-// Split the input cmd into an array of strings with the cmd and flags
-
-// 	CHILD (Working, need to add envps)
-// -If its child, we make the first command run there by taking
-// input from the infile and assigning it as STDIN. 
-// -In the child, we will assign the output to be the write end 
-// of the pipe
-// -We ensure fds from pipe and child are closed
-// -Execute cmd1 in the child using infile.
+/*
+- Child process: Opens infile and checks for errors
+- Dups infile fd into STDIN
+- Dups pipe write end into STDOUT
+- Closes open fd that are no longer needed
+- Executes cmd1
+*/
 void	child_prcs(char *infile, int *pipe_fd, char *cmd, char *envp[])
 {
 	int	in_fd;
@@ -96,25 +94,22 @@ void	child_prcs(char *infile, int *pipe_fd, char *cmd, char *envp[])
 		perror("Open infile error:");
 		exit(1);
 	}
-	// Make stdin to be the infile
 	dup2(in_fd, STDIN_FILENO);
 	close(in_fd);
-	// Make stdout to be the pipe write end
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[0]);
-	// Execute command 1
 	execute_cmd(cmd, envp);
 }
 
-// PARENT
-// -Make the parent wait for the child to finish
-// -Open the outfile
-// Make the input for parent to be the pipe read end.
-// close pipe write end
-// Make the output of parent to be the outfile
-// close parent_fd
-// execute cmd22 for parent so it outputs to the outfile by using
-// the pipe read end as input.
+/*
+- Parent process: Opens outfile and checks for errors
+- Waits for Child to finish
+- If outfile doesn't exist, is created in truncate mode and 666 permissions
+- Dups pipe read end fd into STDIN
+- Dups outfile into STDOUT
+- Closes open fd that are no longer needed
+- Executes cmd2
+*/
 void	parent_prcs(char *outfile, int *pipe_fd, char *cmd, char *envp[])
 {
 	int	out_fd;
@@ -126,19 +121,20 @@ void	parent_prcs(char *outfile, int *pipe_fd, char *cmd, char *envp[])
 		perror("Open outfile error:");
 		exit(1);
 	}
-	// Make input to be the pipe read end
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[1]);
-	// Make output to be the outfile
 	dup2(out_fd, STDOUT_FILENO);
 	close(out_fd);
 	execute_cmd(cmd, envp);
 }
 
-//argv[1]: infile
-//argv[2]: cmd1
-//argv[3]: cmd2
-//argv[4]: outfile
+/*
+- Main function: Checks for argc = 5 to run
+- Creates the pipe for child and parent
+- Forks into child and parent
+- Runs the child and parents processess
+- argv[1]: infile, argv[2]: cmd1, argv[3]: cmd2, argv[4]: outfile
+*/
 int	main(int argc, char *argv[], char *envp[])
 {
 	pid_t	pid;
