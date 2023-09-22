@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_isascii.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/11 15:48:31 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/22 16:50:34 by jchoy-me         ###   ########.fr       */
+/*   Created: 2023/07/11 14:24:27 by jchoy-me          #+#    #+#             */
+/*   Updated: 2023/07/11 15:11:30 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include "libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
-# include <stdio.h>
+int	ft_isascii(int c)
+{
+	return (0 <= c && c <= 127);
+}
 
-#endif
+/*
+int	main(void)
+{
+	printf("%i\n", ft_isascii('\0'));
+	printf("%i\n", ft_isascii('/'));
+	printf("%i\n", ft_isascii(128));
+}
+*/
