@@ -6,7 +6,7 @@
 /*   By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:58:45 by jchoy-me          #+#    #+#             */
-/*   Updated: 2023/09/22 16:48:58 by jchoy-me         ###   ########.fr       */
+/*   Updated: 2023/09/26 15:42:09 by jchoy-me         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,12 +142,12 @@ int	main(int argc, char *argv[], char *envp[])
 
 	if (argc != 5)
 	{
-		perror("Invalid input: Try: ./pipex file1 cmd1 cmd2 file2");
+		ft_putendl_fd("Invalid input. Try: ./pipex file1 cmd1 cmd2 file2", 1);
 		exit(1);
 	}
 	if (pipe(pipe_fd) == -1)
 	{
-		perror("Could not create pipe");
+		perror("Could not create pipe:");
 		exit(1);
 	}
 	pid = fork();
