@@ -6,7 +6,7 @@
 #    By: jchoy-me <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 14:42:23 by jchoy-me          #+#    #+#              #
-#    Updated: 2023/09/22 17:26:59 by jchoy-me         ###   ########.fr        #
+#    Updated: 2023/09/27 10:07:39 by jchoy-me         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@ NAME = pipex
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS = pipex.c
+SRCS = pipex.c \
+		pipex_utils.c
 
 all: $(NAME)
 
